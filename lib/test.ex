@@ -12,8 +12,27 @@ defmodule Test do
       :world
 
   """
-  def hello do
+  use GenServer
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts)
+  end
+
+  @impl GenServer
+  def init(_opts) do
+    send_tick()
+    {:ok, nil}
+  end
+
+  defp send_tick(timeout \\ 100) do
+    Process.send_after(self(), :tick, timeout)
+  end
+
+  @impl GenServer
+  def handle_info(:tick, state) do
     Mint.HTTP.connect(:https, "device.nerves-hub.org", 4001, transport_opts: build())
+    send_tick(5000)
+    {:noreply, state}
   end
 
   def build do
