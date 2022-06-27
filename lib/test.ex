@@ -30,7 +30,7 @@ defmodule Test do
 
   @impl GenServer
   def handle_info(:tick, state) do
-    Mint.HTTP.connect(:https, "device.nerves-hub.org", 4001, transport_opts: build())
+    Mint.HTTP.connect(:https, "0.0.0.0", 4001, transport_opts: build())
     send_tick(5000)
     {:noreply, state}
   end
